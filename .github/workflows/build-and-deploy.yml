@@ -50,7 +50,6 @@ jobs:
               set -eu
 
               kubectl apply -f gateway.tmp.yaml || exit 1
-              kubectl apply -f certificate.tmp.yaml || exit 2
           "@;
 
           $result = az aks command invoke `

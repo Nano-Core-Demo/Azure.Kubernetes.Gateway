@@ -3,6 +3,9 @@ kind: Gateway
 metadata:
   name: %APP_NAME%
   namespace: %KUBERNETES_NAMESPACE%
+  annotations:
+    alb.networking.azure.io/alb-namespace: kube-system
+    alb.networking.azure.io/alb-name: azure-alb-external
 spec:
   gatewayClassName: azure-alb-external
   listeners:
