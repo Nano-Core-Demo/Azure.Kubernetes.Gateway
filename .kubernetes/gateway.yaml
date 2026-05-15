@@ -6,6 +6,7 @@ metadata:
   annotations:
     alb.networking.azure.io/alb-namespace: %KUBERNETES_NAMESPACE%
     alb.networking.azure.io/alb-name: %APP_NAME%-load-balancer
+    cert-manager.io/issuer: letsencrypt-prod
 spec:
   gatewayClassName: azure-alb-external
   listeners:

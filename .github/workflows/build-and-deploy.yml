@@ -57,6 +57,7 @@ jobs:
 
               kubectl apply -f application-load-balancer.tmp.yaml || exit 1
               kubectl apply -f gateway.tmp.yaml || exit 2
+              kubectl apply -f certificate.tmp.yaml || exit 3
           "@;
 
           $result = az aks command invoke `
