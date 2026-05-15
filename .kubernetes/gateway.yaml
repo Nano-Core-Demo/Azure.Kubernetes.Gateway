@@ -18,7 +18,3 @@ spec:
           from: Same
       tls:
         mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            group: ""
-            name: %CERTIFICATE_HOST%-tls
