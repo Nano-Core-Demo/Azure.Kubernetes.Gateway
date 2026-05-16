@@ -6,7 +6,6 @@ metadata:
   annotations:
     alb.networking.azure.io/alb-namespace: %KUBERNETES_NAMESPACE%
     alb.networking.azure.io/alb-name: %APP_NAME%-load-balancer
-    cert-manager.io/issuer: %CLUSTER_ISSUER%
 spec:
   gatewayClassName: azure-alb-external
   listeners:
@@ -21,4 +20,4 @@ spec:
         certificateRefs:
           - kind: Secret
             group: ""
-            name: %CERTIFICATE_HOST%-tls
+            name: %DNS_ZONE_NAME%-tls

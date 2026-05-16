@@ -4,9 +4,9 @@ metadata:
   name: %APP_NAME%-certificate
   namespace: %KUBERNETES_NAMESPACE%
 spec:
-  secretName: %CERTIFICATE_HOST%-tls
+  secretName: %DNS_ZONE_NAME%-tls
   issuerRef:
-    name: %CERTIFICATE_ISSUER%
+    name: letsencrypt-prod
     kind: ClusterIssuer
   duration: 2160h
   renewBefore: 720h
