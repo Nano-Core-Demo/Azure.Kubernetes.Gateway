@@ -41,12 +41,14 @@ jobs:
           $env:ALB_SUBNET_ID = az network vnet subnet show -n aks-subnet-alb -g $env:AZURE_GROUP_KUBERNETES_ASSETS --vnet-name $env:VNET_NAME --query id -o tsv;
 
           $zoneNames = az network dns zone list -g $env:AZURE_GROUP_DNS --query name;
-          
+ 
+          echo $zoneNames;
+
           $env:CERTIFICATE_DNS_NAMES = @(
               foreach ($zoneName in $zoneNames) {
           @"
-              - $($zoneName),
-                *.$($zoneName)
+              - "$($zoneName)",
+                "*.$($zoneName)"
           "@
               }
           ) -join "`n";
