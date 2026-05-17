@@ -84,7 +84,7 @@ jobs:
 
           if ($result.exitCode -ne 0)
           {
-              throw "error"
+              throw "error";
           }
 
       - name: Create DNS CNAME Records
@@ -110,7 +110,7 @@ jobs:
 
           if ($result.exitCode -ne 0)
           {
-              throw "error"
+              throw "error";
           }
  
       - name: GitHub Release
