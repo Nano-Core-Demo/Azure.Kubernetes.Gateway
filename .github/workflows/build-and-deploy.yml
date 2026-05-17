@@ -39,22 +39,15 @@ jobs:
         shell: pwsh
         run: |
           $env:VNET_NAME = az network vnet list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --query [0].name -o tsv;
-          $env:ALB_SUBNET_ID = az network vnet subnet show -n aks-subnet-alb -g $env:AZURE_GROUP_KUBERNETES_ASSETS --vnet-name $env:VNET_NAME --query id --output tsv;
+          $env:ALB_SUBNET_ID = az network vnet subnet show -n aks-subnet-alb -g $env:AZURE_GROUP_KUBERNETES_ASSETS --vnet-name $env:VNET_NAME --query id -o tsv;
 
-          $zones = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
-
-          $dnsNames = foreach ($zone in $zones) {
-              @(
-                  $zone.name,
-                  "*.$($zone.name)"
-              )
-          };
-
+          $zoneNames = az network dns zone list -g $env:AZURE_GROUP_DNS --query name;
+          
           $env:CERTIFICATE_DNS_NAMES = @(
-              foreach ($zone in $zones) {
+              foreach ($zoneName in $zoneNames) {
           @"
-              - $($zone.name),
-                *.$($zone.name)
+              - $($zoneName),
+                *.$($zoneName)
           "@
               }
           ) -join "`n";
@@ -93,7 +86,7 @@ jobs:
           az config set extension.dynamic_install_allow_preview=true;
 
           $env:ALB_NAME = az network alb list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --query [0].name -o tsv;
-          $env:ALB_FQDN = az network alb frontend list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --alb-name $env:ALB_NAME --query [0].fqdn;
+          $env:ALB_FQDN = az network alb frontend list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --alb-name $env:ALB_NAME --query [0].fqdn -o tsv;
 
           $zoneNames = az network dns zone list -g $env:AZURE_GROUP_DNS --query [].name;
 
