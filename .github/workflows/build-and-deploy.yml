@@ -63,11 +63,6 @@ jobs:
           Get-Content .kubernetes/gateway.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/gateway.tmp.yaml;
           Get-Content .kubernetes/certificate.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/certificate.tmp.yaml;
           
-          
-          $aa = Get-Content .kubernetes/certificate.tmp.yaml;
-          echo $aa;
-
-
           $command = @"
               set -eu
 
@@ -89,10 +84,10 @@ jobs:
 
           if ($result.exitCode -ne 0)
           {
-              throw "Deploy failed"
+              throw "error"
           }
 
-      - name: Create DNS CNAME Record
+      - name: Create DNS CNAME Records
         shell: pwsh
         run: |
           az config set extension.dynamic_install_allow_preview=true;
@@ -111,6 +106,11 @@ jobs:
                   --cname $env:ALB_FQDN `
                   --ttl 3600 `
                   --if-none-match;
+          }
+
+          if ($result.exitCode -ne 0)
+          {
+              throw "error"
           }
  
       - name: GitHub Release
