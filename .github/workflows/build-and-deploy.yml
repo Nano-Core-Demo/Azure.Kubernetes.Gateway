@@ -91,13 +91,13 @@ jobs:
           $env:ALB_NAME = az network alb list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --query [0].name -o tsv;
           $env:ALB_FQDN = az network alb frontend list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --alb-name $env:ALB_NAME --query [0].fqdn -o tsv;
 
-          $zoneNames = az network dns zone list -g $env:AZURE_GROUP_DNS --query [].name;
+          $zones = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
 
-          foreach ($zoneName in $zoneNames) 
+          foreach ($zone in $zones) 
           {
               az network dns record-set cname set-record `
                   -g $env:AZURE_GROUP_DNS `
-                  -z $zoneName `
+                  -z $zone.name `
                   --record-set-name * `
                   --cname $env:ALB_FQDN `
                   --ttl 3600 `
