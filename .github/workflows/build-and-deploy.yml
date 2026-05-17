@@ -40,7 +40,7 @@ jobs:
           $env:VNET_NAME = az network vnet list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --query [0].name -o tsv;
           $env:ALB_SUBNET_ID = az network vnet subnet show -n aks-subnet-alb -g $env:AZURE_GROUP_KUBERNETES_ASSETS --vnet-name $env:VNET_NAME --query id -o tsv;
 
-          $zones = az network dns zone list -g $env:AZURE_GROUP_DNS;
+          $zones = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
  
           echo $zoneNames;
 
