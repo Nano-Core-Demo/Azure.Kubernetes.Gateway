@@ -89,12 +89,6 @@ jobs:
 
           $zones = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
 
-          
-          echo "AZURE_GROUP_DNS:" + $env:AZURE_GROUP_DNS
-          echo "ALB_FQDN:" + $env:ALB_FQDN
-          echo "ALB_NAME:" + $env:ALB_NAME
-          echo $zones;
-
           foreach ($zone in $zones) 
           {
               az network dns record-set cname create `
@@ -102,21 +96,13 @@ jobs:
                   -z $($zone.name) `
                   -n "*" `
                   --ttl 3600 `
-                  --if-none-match "*";
+                  --if-none-match "*" -o none;
 
               az network dns record-set cname set-record `
                   -g $env:AZURE_GROUP_DNS `
                   -z $($zone.name) `
                   -n "*" `
-                  -c $env:ALB_FQDN;
-
-              # az network dns record-set cname create `
-              #     -g $env:AZURE_GROUP_DNS `
-              #     -z $($zone.name) `
-              #     --record-set-name "*" `
-              #     --cname $env:ALB_FQDN `
-              #     --ttl 3600 `
-              #     --if-none-match "*";
+                  -c $env:ALB_FQDN -o none;
           }
 
           if ($LastExitCode -ne 0)
