@@ -42,8 +42,6 @@ jobs:
 
           $zones = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
  
-          echo $zoneNames;
-
           $env:CERTIFICATE_DNS_NAMES = @(
               foreach ($zone in $zones) {
           @"
@@ -52,8 +50,6 @@ jobs:
           "@
               }
           ) -join "`n";
-
-          echo $env:CERTIFICATE_DNS_NAMES;
 
           Get-Content .kubernetes/application-load-balancer.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/application-load-balancer.tmp.yaml;
           Get-Content .kubernetes/gateway.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/gateway.tmp.yaml;
@@ -91,23 +87,23 @@ jobs:
           $env:ALB_NAME = az network alb list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --query [0].name -o tsv;
           $env:ALB_FQDN = az network alb frontend list -g $env:AZURE_GROUP_KUBERNETES_ASSETS --alb-name $env:ALB_NAME --query [0].fqdn -o tsv;
 
-          #$zones = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
+          $zones2 = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
 
-          # foreach ($zone in $zones) 
-          # {
-          #     az network dns record-set cname set-record `
-          #         -g $env:AZURE_GROUP_DNS `
-          #         -z $($zone.name) `
-          #         --record-set-name * `
-          #         --cname $env:ALB_FQDN `
-          #         --ttl 3600 `
-          #         --if-none-match;
-          # }
+          foreach ($zone in $zones2) 
+          {
+              az network dns record-set cname set-record `
+                  -g $env:AZURE_GROUP_DNS `
+                  -z $($zone.name) `
+                  --record-set-name * `
+                  --cname $env:ALB_FQDN `
+                  --ttl 3600 `
+                  --if-none-match;
+          }
 
-          # if ($result.exitCode -ne 0)
-          # {
-          #     throw "error";
-          # }
+          if ($result.exitCode -ne 0)
+          {
+              throw "error";
+          }
  
       - name: GitHub Release
         if: github.ref == 'refs/heads/master'
