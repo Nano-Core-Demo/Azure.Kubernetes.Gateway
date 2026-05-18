@@ -103,7 +103,7 @@ jobs:
                   --record-set-name "*" `
                   --cname $env:ALB_FQDN `
                   --ttl 3600 `
-                  --if-none-match;
+                  --if-none-match "*";
           }
 
           if ($LastExitCode -ne 0)
