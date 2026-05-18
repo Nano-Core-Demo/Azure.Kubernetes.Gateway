@@ -91,13 +91,13 @@ jobs:
 
           foreach ($zone in $zones2) 
           {
-              az network dns record-set cname set-record `
-                  -g $env:AZURE_GROUP_DNS `
-                  -z $($zone.name) `
-                  --record-set-name * `
-                  --cname $env:ALB_FQDN `
-                  --ttl 3600 `
-                  --if-none-match;
+              # az network dns record-set cname set-record `
+              #     -g $env:AZURE_GROUP_DNS `
+              #     -z $($zone.name) `
+              #     --record-set-name * `
+              #     --cname $env:ALB_FQDN `
+              #     --ttl 3600 `
+              #     --if-none-match;
           }
 
           if ($result.exitCode -ne 0)
