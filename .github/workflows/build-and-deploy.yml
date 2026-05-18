@@ -89,25 +89,21 @@ jobs:
 
           $zones = az network dns zone list -g $env:AZURE_GROUP_DNS | ConvertFrom-Json;
 
-          echo $zones;
-
           foreach ($zone in $zones) 
           {
-              echo $zone.name;
-
-              # az network dns record-set cname set-record `
-              #     -g $env:AZURE_GROUP_DNS `
-              #     -z $($zone.name) `
-              #     --record-set-name * `
-              #     --cname $env:ALB_FQDN `
-              #     --ttl 3600 `
-              #     --if-none-match;
+              az network dns record-set cname set-record `
+                  -g $env:AZURE_GROUP_DNS `
+                  -z $($zone.name) `
+                  --record-set-name * `
+                  --cname $env:ALB_FQDN `
+                  --ttl 3600 `
+                  --if-none-match;
           }
 
-          # if ($result.exitCode -ne 0)
-          # {
-          #     throw "error";
-          # }
+          if ($LastExitCode -ne 0)
+          { 
+              throw "error";
+          }
  
       - name: GitHub Release
         if: github.ref == 'refs/heads/master'
