@@ -57,6 +57,8 @@ jobs:
               }
           ) -join "`n";
 
+          $env:KUBERNETES_CLUSTER = az aks list -g $env:AZURE_GROUP_KUBERNETES --query [0].name -o tsv;
+
           Get-Content .kubernetes/gateway.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/gateway.tmp.yaml;
           kubectl apply -f .kubernetes/gateway.tmp.yaml;
           if ($LastExitCode -ne 0) 
