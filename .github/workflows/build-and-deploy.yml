@@ -48,14 +48,23 @@ jobs:
         run: |
           $zoneNames = az network dns zone list -g $env:AZURE_GROUP_DNS --query [].name -o tsv;
  
-          $env:CERTIFICATE_DNS_NAMES = @(
-              foreach ($zoneName in $zoneNames) {
-          @"
-              - $($zoneName),
-                *.$($zoneName)
-          "@
-              }
-          ) -join "`n";
+          #$env:CERTIFICATE_DNS_NAMES = @(
+          #    foreach ($zoneName in $zoneNames) {
+          #@"
+          #    - $($zoneName),
+          #      *.$($zoneName)
+          #"@
+          #    }
+          #) -join "`n";
+
+          $dnsLines = @()
+
+          foreach ($zoneName in $zoneNames) {
+              $dnsLines += "  - $zoneName"
+              $dnsLines += "  - *.$zoneName"
+          }
+
+          $env:CERTIFICATE_DNS_NAMES = $dnsLines -join "`n"
 
           echo "AAA";
           echo $env:CERTIFICATE_DNS_NAMES;
